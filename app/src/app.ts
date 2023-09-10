@@ -4,10 +4,10 @@ const PORT: number = 8000;
 
 //get data
 
-app.get("/station", (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   return res.status(200).json({
     sucess: true,
-    data: "Live Synced on Sun 10 Sep",
+    data: "Live Synced on Sun 10 September",
   });
 });
 
