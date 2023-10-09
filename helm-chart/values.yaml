@@ -3,7 +3,7 @@ app:
   replicaCount: 1
   image:
     repository: australia-southeast1-docker.pkg.dev/test-evie/energy-management-docker-repo/sample-app-k8s
-    tag: 0.4.0
+    tag: 0.1.0
     pullPolicy: IfNotPresent
   containerName: cd-app
   service:
