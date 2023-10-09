@@ -8,5 +8,5 @@ app:
   containerName: cd-app
   service:
     name: cd-service
-    type: ClusterIP
+    type: LoadBalancer
     PORT: 8000
