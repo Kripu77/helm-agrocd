@@ -25,5 +25,5 @@ spec:
     canary:
       steps:
        - setWeight: 50
-       - pause: { duration: 1000}
+       - pause: { duration: 180}
   revisionHistoryLimit: 3     
