@@ -24,6 +24,14 @@ spec:
   strategy:
     canary:
       steps:
+       - setWeight: 10
+       - pause: { duration: 20}
+       - setWeight: 20
+       - pause: { duration: 20}
+       - setWeight: 30
+       - pause: { duration: 20}
        - setWeight: 50
-       - pause: { duration: 180}
+       - pause: { duration: 70}
+       - setWeight: 80
+       - pause: { duration: 80}                            
   revisionHistoryLimit: 3     
