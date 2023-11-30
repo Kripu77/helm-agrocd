@@ -74,7 +74,6 @@ jobs:
         curl -X POST https://api.github.com/repos/Kripu77/helm-agrocd/releases \
           -H "Authorization: Bearer $GITHUB_TOKEN" \
           -H "Content-Type: application/json" \
-          -d '{"tag_name":"'"$RELEASE_NAME"'","name":"'"$RELEASE_NAME"'","body":"'"$RELEASE_NOTES"'"}'
-
+          -d "{\"tag_name\":\"$RELEASE_NAME\",\"name\":\"$RELEASE_NAME\",\"body\":\"$RELEASE_NOTES\"}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
