@@ -46,8 +46,7 @@ jobs:
         # Push the changes to the main branch
         git push origin main
 
-      # env:
-      #   KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
     - name: Get Helm Chart Version
       id: get_version
       run: |
