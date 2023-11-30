@@ -70,10 +70,15 @@ jobs:
           RELEASE_NOTES=$(git log --pretty=format:"- %h %s%n%n%B" $PREVIOUS_TAG..HEAD)
         fi
 
+
+        # Construct the JSON payload using jq
+        JSON_PAYLOAD=$(jq -n --arg tag "$RELEASE_NAME" --arg name "$RELEASE_NAME" --arg body "$RELEASE_NOTES" \
+           '{"tag_name": $tag, "name": $name, "body": $body}')        
+
         # Publish the release
         curl -X POST https://api.github.com/repos/Kripu77/helm-agrocd/releases \
           -H "Authorization: Bearer $GITHUB_TOKEN" \
           -H "Content-Type: application/json" \
-          -d "{"tag_name":"$RELEASE_NAME","name":"$RELEASE_NAME","body":"$RELEASE_NOTES"}"
+          -d "$JSON_PAYLOAD"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
