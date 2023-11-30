@@ -63,7 +63,7 @@ jobs:
         # Check if there are tags in the repository
         if [ -z "$(git tag -l)" ]; then
           # No tags, it's the initial release
-          RELEASE_NOTES="Initial Release"
+          RELEASE_NOTES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
         else
           # Tags are present, generate release notes as before
           PREVIOUS_TAG=$(git describe --tags --abbrev=0)
