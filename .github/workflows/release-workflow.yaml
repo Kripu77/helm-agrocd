@@ -46,7 +46,6 @@ jobs:
         # Push the changes to the main branch
         git push origin main
 
-
     - name: Get Helm Chart Version
       id: get_version
       run: |
@@ -70,10 +69,15 @@ jobs:
           RELEASE_NOTES=$(git log --pretty=format:"- %h %s%n%n%B" $PREVIOUS_TAG..HEAD)
         fi
 
+        # Construct the full changelog link
+        FULL_CHANGELOG="Full Changelog: $PREVIOUS_TAG...$RELEASE_NAME"
+
+        # Combine version, "What's Changed," and full changelog
+        RELEASE_NOTES="Version $RELEASE_VERSION\n\nWhat's Changed:\n$RELEASE_NOTES\n\n$FULL_CHANGELOG"
 
         # Construct the JSON payload using jq
         JSON_PAYLOAD=$(jq -n --arg tag "$RELEASE_NAME" --arg name "$RELEASE_NAME" --arg body "$RELEASE_NOTES" \
-           '{"tag_name": $tag, "name": $name, "body": $body}')        
+        '{"tag_name": $tag, "name": $name, "body": $body}')
 
         # Publish the release
         curl -X POST https://api.github.com/repos/Kripu77/helm-agrocd/releases \
