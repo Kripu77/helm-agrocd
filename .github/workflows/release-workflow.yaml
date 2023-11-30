@@ -1,0 +1,67 @@
+name: Release Workflow
+
+on:
+  pull_request:
+    types:
+    - closed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v2
+      with:
+        version: 'latest'
+
+    - name: Bump Helm Chart Version
+      run: |
+        # Define the path to the Chart.yaml file
+        CHART_FILE="Chart.yaml"
+
+        # Read the current version from Chart.yaml
+        CURRENT_VERSION=$(grep -E '^version:' "$CHART_FILE" | awk '{print $2}')
+
+        # Parse major, minor, and patch version components
+        MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+        MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+        PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
+
+        # Increment the version (you can customize this logic based on your needs)
+        NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+
+        # Update the version in Chart.yaml
+        sed -i "s/^version: $CURRENT_VERSION/version: $NEW_VERSION/" "$CHART_FILE"
+
+        # Commit the changes
+        git config user.email "actions@github.com"
+        git config user.name "GitHub Actions"
+        git add "$CHART_FILE"
+        git commit -m "Bump Helm chart version to $NEW_VERSION"
+
+        # Push the changes to the main branch
+        git push origin main
+
+      # env:
+      #   KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
+    - name: Publish Release Notes
+      run: |
+        # Use your script/tool to generate release notes
+        # Example: Generate release notes from commit messages since the last release
+        PREVIOUS_TAG=$(git describe --tags --abbrev=0)
+        RELEASE_NOTES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
+
+        # Publish the release notes, for example, as a GitHub release
+        RELEASE_NAME="v$NEW_VERSION"
+        curl -X POST https://api.github.com/repos/${{ github.repository }}/releases \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d "{\"tag_name\":\"$RELEASE_NAME\",\"name\":\"$RELEASE_NAME\",\"body\":\"$RELEASE_NOTES\"}"
+
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
