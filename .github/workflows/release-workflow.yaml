@@ -59,22 +59,21 @@ jobs:
         # Use the captured version as the release version
         RELEASE_VERSION="${{ steps.get_version.outputs.version }}"
         RELEASE_NAME="v$RELEASE_VERSION"
-
         # Check if there are tags in the repository
         if [ -z "$(git tag -l)" ]; then
-          # No tags, it's the initial release
-          RELEASE_NOTES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
+        # No tags, it's the initial release
+         RELEASE_NOTES=$(git log --pretty=format:"- %s")
         else
-          # Tags are present, generate release notes as before
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0)
-          RELEASE_NOTES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
+        # Tags are present, generate release notes as before
+         PREVIOUS_TAG=$(git describe --tags --abbrev=0)
+         RELEASE_NOTES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
         fi
 
         # Publish the release
         curl -X POST https://api.github.com/repos/Kripu77/helm-agrocd/releases \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d "{\"tag_name\":\"$RELEASE_NAME\",\"name\":\"$RELEASE_NAME\",\"body\":\"$RELEASE_NOTES\"}"
+         -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+         -H "Content-Type: application/json" \
+         -d "{\"tag_name\":\"$RELEASE_NAME\",\"name\":\"$RELEASE_NAME\",\"body\":\"$RELEASE_NOTES\"}"
 
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
