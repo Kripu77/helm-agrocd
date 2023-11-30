@@ -63,9 +63,11 @@ jobs:
         if [ -z "$(git tag -l)" ]; then
           # No tags, it's the initial release
           RELEASE_NOTES=$(git log --pretty=format:"- %h %s%n%n%B" | sed -e 's/^/- /' | tr '\n' ' ') 
+        else  
           # Tags are present, generate release notes as before
           PREVIOUS_TAG=$(git describe --tags --abbrev=0)
-          RELEASE_NOTES=$(git log --pretty=format:"- %h %s%n%n%B" $PREVIOUS_TAG..HEAD | sed -e 's/^/- /' | tr '\n' ' ')        fi
+          RELEASE_NOTES=$(git log --pretty=format:"- %h %s%n%n%B" $PREVIOUS_TAG..HEAD | sed -e 's/^/- /' | tr '\n' ' ')       
+        fi
 
         # Construct the full changelog link
         FULL_CHANGELOG="Full Changelog: $PREVIOUS_TAG...$RELEASE_NAME"
