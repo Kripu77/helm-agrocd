@@ -48,9 +48,19 @@ jobs:
 
       # env:
       #   KUBECONFIG: ${{ secrets.KUBECONFIG }}
+    - name: Get Helm Chart Version
+      id: get_version
+      run: |
+        # Capture the version from Chart.yaml
+        VERSION=$(grep -E '^version:' Chart.yaml | awk '{print $2}')
+        echo "::set-output name=version::$VERSION"
 
     - name: Publish Release Notes
       run: |
+        # Use the captured version as the release version
+        RELEASE_VERSION="${{ steps.get_version.outputs.version }}"
+        RELEASE_NAME="v$RELEASE_VERSION"
+
         # Check if there are tags in the repository
         if [ -z "$(git tag -l)" ]; then
           # No tags, it's the initial release
@@ -61,7 +71,7 @@ jobs:
           RELEASE_NOTES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..HEAD)
         fi
 
-        RELEASE_NAME="v$NEW_VERSION"
+        # Publish the release
         curl -X POST https://api.github.com/repos/Kripu77/helm-agrocd/releases \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "Content-Type: application/json" \
