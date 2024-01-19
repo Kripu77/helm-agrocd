@@ -1,5 +1,5 @@
-apiVersion: argoproj.io/v1alpha1 
-kind: Rollout
+apiVersion: apps/v1
+kind: Deployment
 metadata:
    name: {{.Release.Name}}-cd-sample-server
    namespace: {{ .Release.Namespace }}
@@ -20,18 +20,4 @@ spec:
            image: "{{ .Values.app.image.repository}}:{{ .Values.app.image.tag}}"
            imagePullPolicy: {{ .Values.app.image.pullPolicy}}      
            ports: 
-             - containerPort: {{ .Values.app.service.PORT }} 
-  strategy:
-    canary:
-      steps:
-       - setWeight: 10
-       - pause: { duration: 20}
-       - setWeight: 20
-       - pause: { duration: 20}
-       - setWeight: 30
-       - pause: { duration: 20}
-       - setWeight: 50
-       - pause: { duration: 70}
-       - setWeight: 80
-       - pause: { duration: 80}                            
-  revisionHistoryLimit: 3     
+             - containerPort: {{ .Values.app.service.PORT }}  
