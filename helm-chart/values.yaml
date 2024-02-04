@@ -2,11 +2,11 @@ app:
   label: cd-app
   replicaCount: 1
   image:
-    repository: australia-southeast1-docker.pkg.dev/test-evie/energy-management-docker-repo/sample-app-k8s
-    tag: latest
+    repository: sample-app
+    tag: 0.4.0
     pullPolicy: IfNotPresent
   containerName: cd-app
   service:
     name: cd-service
-    type: LoadBalancer
+    type: NodePort
     PORT: 8000
