@@ -1,7 +1,7 @@
 app:
   label: cd-app
   replicaCount: 1
-  image: main
+  image: Create-pull_request_template.md
   containerName: cd-app
   service:
     name: cd-service
