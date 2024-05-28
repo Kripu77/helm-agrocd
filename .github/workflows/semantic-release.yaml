@@ -3,7 +3,7 @@ name: Semantic Release Workflow
 on:
   push:
     branches:
-      - main
+      - test
 
 jobs:
   release-on-push:
