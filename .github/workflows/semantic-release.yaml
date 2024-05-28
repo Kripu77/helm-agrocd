@@ -1,23 +1,30 @@
 name: Semantic Release Workflow
+
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   release-on-push:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Check out repository
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
         token: ${{ secrets.BOT_ACCESS_TOKEN }}
-    - uses: rymndhng/release-on-push-action@master
+
+    - name: Run Semantic Release
+      id: release
+      uses: rymndhng/release-on-push-action@master
       with:
         bump_version_scheme: patch
         use_github_release_notes: true
+
     - name: Bump Helm Chart Version
       run: |
         echo "Got tag name ${{ steps.release.outputs.tag_name }}"
@@ -35,15 +42,13 @@ jobs:
         # Update the version to the newer one in Chart.yaml
         sed -i "s/^version: $CURRENT_VERSION/version: $NEW_VERSION/" "$CHART_FILE"
 
+        # Configure git for committing the version bump
+        git config --global user.email "khadkakripu4@gmail.com"
+        git config --global user.name "Kripu77"
+
         # Commit the changes
-        git config user.email "khadkakripu4@gmail.com"
-        git config user.name "Kripu77"
         git add "$CHART_FILE"
         git commit -m "Bump Helm chart version to $NEW_VERSION"
 
         # Push the changes to the main branch
         git push origin main
-
-
-
-
