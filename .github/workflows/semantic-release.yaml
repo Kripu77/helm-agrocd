@@ -1,0 +1,49 @@
+name: Semantic Release Workflow
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  release-on-push:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.BOT_ACCESS_TOKEN }}
+    - uses: rymndhng/release-on-push-action@master
+      with:
+        bump_version_scheme: patch
+        use_github_release_notes: true
+    - name: Bump Helm Chart Version
+      run: |
+        echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+        echo "Got release version ${{ steps.release.outputs.version }}"
+
+        # Path to the Chart.yaml file
+        CHART_FILE="./helm-chart/Chart.yaml"
+
+        # Read the current version of the chart from Chart.yaml
+        CURRENT_VERSION=$(grep -E '^version:' "$CHART_FILE" | awk '{print $2}')
+
+        # new version is the release version
+        NEW_VERSION="${{ steps.release.outputs.version }}"
+
+        # Update the version to the newer one in Chart.yaml
+        sed -i "s/^version: $CURRENT_VERSION/version: $NEW_VERSION/" "$CHART_FILE"
+
+        # Commit the changes
+        git config user.email "khadkakripu4@gmail.com"
+        git config user.name "kripu77"
+        git add "$CHART_FILE"
+        git commit -m "Bump Helm chart version to $NEW_VERSION"
+
+        # Push the changes to the main branch
+        git push origin main
+
+
+
+
