@@ -1,12 +1,14 @@
 name: Semantic Release Workflow
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      - test
+      - main
 
 jobs:
-  release-on-push:
+  run-on-merge:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
