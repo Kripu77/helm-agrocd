@@ -37,7 +37,7 @@ jobs:
 
         # Commit the changes
         git config user.email "khadkakripu4@gmail.com"
-        git config user.name "kripu77"
+        git config user.name "Kripu77"
         git add "$CHART_FILE"
         git commit -m "Bump Helm chart version to $NEW_VERSION"
 
