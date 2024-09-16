@@ -26,10 +26,9 @@ jobs:
           ls -la
 
       - name: Change directory and make script executable
-        working-directory: ./scripts
         run: |
           chmod +x helm-docs.sh
-          ./helm-docs.sh
+          helm-docs.sh
 
       - name: Check for documentation changes
         working-directory: ./scripts
