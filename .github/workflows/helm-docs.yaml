@@ -3,7 +3,7 @@ name: Run Helm Docs
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   linter-artifacthub:
