@@ -1,7 +1,7 @@
 app:
   label: cd-app
   replicaCount: 1
-  image: main
+  image: latest
   containerName: cd-app
   service:
     name: cd-service
