@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-   linter-artifacthub:
+  linter-artifacthub:
     runs-on: ubuntu-latest
     container:
       image: public.ecr.aws/artifacthub/ah:v1.14.0
@@ -17,7 +17,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
       - name: Run ah lint
         working-directory: ./helm-chart
         run: ah lint
 
+      - name: Run docs-testing (helm-docs)
+        id: helm-docs
+        run: |
+          .helm-docs.sh
+          if [[ $(git diff --stat) != '' ]]; then
+            echo -e '\033[0;31mDocumentation outdated!\033[0m ❌'
+            git diff --color
+            exit 1
+          else
+            echo -e '\033[0;32mDocumentation up to date\033[0m ✔'
+          fi
