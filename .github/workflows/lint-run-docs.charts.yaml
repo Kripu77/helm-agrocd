@@ -22,10 +22,6 @@ jobs:
         working-directory: ./helm-chart
         run: ah lint
 
-      - name: Install helm-docs
-        run: |
-          curl -sSLf https://raw.githubusercontent.com/norwoodj/helm-docs/master/scripts/install.sh | bash
-          
       - name: Run docs-testing (helm-docs)
         id: helm-docs
         run: |
