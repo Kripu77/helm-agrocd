@@ -27,6 +27,7 @@ jobs:
         run: chmod +x ./helm-docs.sh
 
       - name: Run docs-testing (helm-docs)
+        id: helm-docs
         run: |
           ./helm-docs.sh
           if [[ $(git diff --stat) != '' ]]; then
