@@ -1,12 +1,10 @@
 name: Helm Chart CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+      - test
 
 jobs:
   lint-and-docs:
