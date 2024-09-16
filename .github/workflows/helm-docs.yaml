@@ -29,7 +29,10 @@ jobs:
         working-directory: ./scripts
         run: |
           chmod +x helm-docs.sh
-          helm-docs.sh
+
+      - name: Print files in current working directory
+        run: |
+          ls -la
 
       - name: Check for documentation changes
         working-directory: ./scripts
