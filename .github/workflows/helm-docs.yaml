@@ -25,15 +25,11 @@ jobs:
         run: |
           ls -la
 
-      - name: Change directory and make script executable
-        working-directory: ./scripts
-        run: |
-          chmod +x helm-docs.sh
+
 
       - name: Run Helm Docs
         working-directory: ./scripts
         run: |
-
           ./helm-docs.sh
 
       - name: Print files in current working directory
