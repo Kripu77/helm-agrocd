@@ -5,8 +5,7 @@ metadata:
    namespace: {{ .Release.Namespace }}
    labels: 
      app: {{ .Values.app.label }}
-spec:
-  replicas: {{ .Values.app.replicaCount }}
+spec:replicas: {{ .Values.app.replicaCount }}
   selector:
      matchLabels:
        app: {{ .Values.app.label }}
