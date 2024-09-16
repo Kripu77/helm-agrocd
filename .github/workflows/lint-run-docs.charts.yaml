@@ -14,20 +14,15 @@ jobs:
     container:
       image: public.ecr.aws/artifacthub/ah:v1.14.0
       options: --user 1001
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3 # Updated to v3, latest stable version
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Run ah lint
         working-directory: ./helm-chart
         run: ah lint
 
-      - name: Make helm-docs.sh executable
-        run: chmod +x ./helm-docs.sh
-
       - name: Run docs-testing (helm-docs)
-        working-directory: ./
         id: helm-docs
         run: |
           ./helm-docs.sh
