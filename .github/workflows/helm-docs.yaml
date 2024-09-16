@@ -30,6 +30,12 @@ jobs:
         run: |
           chmod +x helm-docs.sh
 
+      - name: Run Helm Docs
+        working-directory: ./scripts
+        run: |
+
+          ./helm-docs.sh
+
       - name: Print files in current working directory
         run: |
           ls -la
