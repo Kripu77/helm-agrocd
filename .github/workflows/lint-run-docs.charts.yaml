@@ -26,7 +26,8 @@ jobs:
         working-directory: ./scripts
         id: helm-docs
         run: |
-          echo pwd
+          REPO_ROOT="$(pwd)"
+          echo "Repository root is $REPO_ROOT"
           chmod +x ./helm-docs.sh
           ./helm-docs.sh
           if [[ $(git diff --stat) != '' ]]; then
