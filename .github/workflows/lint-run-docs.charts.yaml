@@ -24,8 +24,7 @@ jobs:
         run: ah lint
 
       - name: Make helm-docs.sh executable
-        working-directory: ./
-        run: chmod +x helm-docs.sh
+        run: chmod +x ./helm-docs.sh
 
       - name: Run docs-testing (helm-docs)
         run: |
