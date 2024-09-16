@@ -1,2 +1,2 @@
 # helm-agrocd
-helm chart for sample argocd deployment...
+helm chart for sample argocd deployment.
