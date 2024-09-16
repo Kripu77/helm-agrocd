@@ -26,9 +26,8 @@ jobs:
           ls -la
 
       - name: Run Helm Docs
-        working-directory: ./scripts
         run: |
-          chmod +x helm-docs.sh  && ./scripts/helm-docs.sh
+          chmod +x ./scripts/helm-docs.sh  && ./scripts/helm-docs.sh
 
       - name: Print files in current working directory
         run: |
