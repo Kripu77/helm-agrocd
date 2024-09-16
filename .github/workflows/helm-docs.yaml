@@ -1,12 +1,9 @@
-name: Lint Helm Charts
+name: Run Helm Docs
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - master
 
 jobs:
   linter-artifacthub:
@@ -14,22 +11,25 @@ jobs:
     container:
       image: public.ecr.aws/artifacthub/ah:v1.14.0
       options: --user 1001
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Run ah lint
-        working-directory: ./helm-chart
-        run: ah lint
-
-      - name: Run docs-testing (helm-docs)
-        working-directory: ./scripts
-        id: helm-docs
+      - name: Print current working directory
         run: |
           REPO_ROOT="$(pwd)"
           echo "Repository root is $REPO_ROOT"
-          chmod +x ./helm-docs.sh
+
+      - name: Change directory and make script executable
+        working-directory: ./scripts
+        run: |
+          chmod +x helm-docs.sh
           ./helm-docs.sh
+
+      - name: Check for documentation changes
+        working-directory: ./scripts
+        run: |
           if [[ $(git diff --stat) != '' ]]; then
             echo -e '\033[0;31mDocumentation outdated!\033[0m ❌'
             git diff --color
