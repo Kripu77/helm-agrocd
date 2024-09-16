@@ -25,7 +25,15 @@ jobs:
       - name: Install helm-docs
         run: |
           curl -sSLf https://raw.githubusercontent.com/norwoodj/helm-docs/master/scripts/install.sh | bash
-
-      - name: Run helm-docs
-        working-directory: ./helm-chart
-        run: helm-docs
+          
+      - name: Run docs-testing (helm-docs)
+        id: helm-docs
+        run: |
+          .helm-docs.sh
+          if [[ $(git diff --stat) != '' ]]; then
+            echo -e '\033[0;31mDocumentation outdated!\033[0m ❌'
+            git diff --color
+            exit 1
+          else
+            echo -e '\033[0;32mDocumentation up to date\033[0m ✔'
+          fi
