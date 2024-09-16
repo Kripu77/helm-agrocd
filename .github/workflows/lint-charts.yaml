@@ -22,5 +22,4 @@ jobs:
           version: '3.x'
 
       - name: Helm lint
-        run: ehco pwd
         run: helm lint ./helm-chart
