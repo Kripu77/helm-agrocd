@@ -23,10 +23,12 @@ jobs:
         run: ah lint
 
       - name: Run docs-testing (helm-docs)
+        working-directory: ./scripts
         id: helm-docs
         run: |
-          chmod +x ./scripts/helm-docs.sh
-          ./scripts/helm-docs.sh
+          echo pwd
+          chmod +x ./helm-docs.sh
+          ./helm-docs.sh
           if [[ $(git diff --stat) != '' ]]; then
             echo -e '\033[0;31mDocumentation outdated!\033[0m ❌'
             git diff --color
