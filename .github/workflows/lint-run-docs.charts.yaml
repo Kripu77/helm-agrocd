@@ -25,7 +25,7 @@ jobs:
       - name: Run docs-testing (helm-docs)
         id: helm-docs
         run: |
-          ./helm-docs.sh
+          helm-docs.sh
           if [[ $(git diff --stat) != '' ]]; then
             echo -e '\033[0;31mDocumentation outdated!\033[0m ❌'
             git diff --color
