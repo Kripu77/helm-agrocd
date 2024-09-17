@@ -52,10 +52,8 @@ jobs:
     - name: Generate Helm Docs
       run: helm-docs
 
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        title: "Bump Helm chart version and update docs"
-        body: "This PR updates the Helm chart version and regenerates the documentation."
-        branch: "helm-chart-update"
-        commit-message: "Update Helm chart version and docs"
+    - name: Commit and Push Changes
+      run: |
+        git add .
+        git commit -m "Update Helm chart version and docs" || echo "No changes to commit"
+        git push origin main
