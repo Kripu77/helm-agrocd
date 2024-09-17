@@ -1,18 +1,15 @@
 name: Semantic Release Workflow
-
 on:
   pull_request:
     types: [closed]
     branches:
     - main
-
 jobs:
   run-on-merge:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -30,53 +27,35 @@ jobs:
       run: |
         echo "Got tag name ${{ steps.release.outputs.tag_name }}"
         echo "Got release version ${{ steps.release.outputs.version }}"
-
-        # Path to the Chart.yaml file
         CHART_FILE="./helm-chart/Chart.yaml"
-
-        # Read the current version of the chart from Chart.yaml
         CURRENT_VERSION=$(grep -E '^version:' "$CHART_FILE" | awk '{print $2}')
-
-        # new version is the release version
         NEW_VERSION="${{ steps.release.outputs.version }}"
-
-        # Update the version to the newer one in Chart.yaml
         sed -i "s/^version: $CURRENT_VERSION/version: $NEW_VERSION/" "$CHART_FILE"
-
-        # Configure git for committing the version bump
         git config --global user.email "khadkakripu4@gmail.com"
         git config --global user.name "Kripu77"
-
-        # Commit the changes
         git add "$CHART_FILE"
-        
+        git commit -m "Bump Helm chart version to $NEW_VERSION"
+
     - name: Set up Helm
-      uses: azure/setup-helm@fe7b79cd5ee1e45176fcad797de68ecaf3ca4814 # v4.2.0
+      uses: azure/setup-helm@v3
       with:
-        version: v3.10.1 # Also update in publish.yaml
+        version: v3.10.1
 
-    - name: Install helm-docs plugin
+    - name: Install helm-docs
       run: |
-        curl -sSL https://github.com/norwoodj/helm-docs/releases/latest/download/helm-docs-linux-amd64.tar.gz | tar -xz -C /usr/local/bin helm-docs
+        HELM_DOCS_VERSION=$(curl -s https://api.github.com/repos/norwoodj/helm-docs/releases/latest | jq -r .tag_name)
+        curl -LO "https://github.com/norwoodj/helm-docs/releases/download/${HELM_DOCS_VERSION}/helm-docs_${HELM_DOCS_VERSION#v}_Linux_x86_64.tar.gz"
+        tar -xzf helm-docs_${HELM_DOCS_VERSION#v}_Linux_x86_64.tar.gz
+        sudo mv helm-docs /usr/local/bin/helm-docs
+        helm-docs --version
 
     - name: Generate Helm Docs
       run: helm-docs
 
-    - name: Commit and Push Helm Docs
-      run: |
-        git add .
-        git commit -m "Update Helm docs"
-        git push origin main
-
-    - name: Install helm-docs plugin
-      run: |
-        curl -sSL https://github.com/norwoodj/helm-docs/releases/latest/download/helm-docs-linux-amd64.tar.gz | tar -xz -C /usr/local/bin helm-docs
-
-    - name: Generate Helm Docs
-      run: helm-docs
-
-    - name: Commit and Push Helm Docs
-      run: |
-        git add .
-        git commit -m "Update Helm docs"
-        git push origin main
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        title: "Bump Helm chart version and update docs"
+        body: "This PR updates the Helm chart version and regenerates the documentation."
+        branch: "helm-chart-update"
+        commit-message: "Update Helm chart version and docs"
